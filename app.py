@@ -226,10 +226,10 @@ def simulate_batch(n: int = 10):
     return results
 
 
-from pydantic import BaseModel
-class AIState(BaseModel):
-    # flexible state; validation is minimal to allow arbitrary dict
-    __root__: dict
+from pydantic import RootModel
+
+class AIState(RootModel[dict]):
+    pass
 
 @app.post('/api/ai/action')
 def ai_action(state: AIState):
