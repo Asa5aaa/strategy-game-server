@@ -5,19 +5,16 @@ import uvicorn
 
 app = FastAPI()
 
-# ✅ فعال‌سازی CORS
+# فعال‌سازی CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # می‌تونی بجای * آدرس GitHub Pages بذاری
+    allow_origins=["*"],   # برای امنیت می‌تونی محدود به GitHub Pages کنی
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---------------------------
-# 📌 مدل‌ها
-# ---------------------------
-
+# 🟢 مدل‌ها
 class RegisterRequest(BaseModel):
     email: EmailStr
     username: str
@@ -27,41 +24,32 @@ class MoveRequest(BaseModel):
     move: str
 
 class AIState(BaseModel):
-    state: dict  # RootModel توی Pydantic v2 تغییر کرده، اینجوری درست کار می‌کنه
+    state: dict
 
-# ---------------------------
-# 📌 تست ساده (برای اطمینان)
-# ---------------------------
+# 🟢 روت تست
 @app.get("/")
 def root():
+    print("📡 Root endpoint hit")
     return {"message": "Server is running!"}
 
-# ---------------------------
-# 📌 API ثبت‌نام
-# ---------------------------
+# 🟢 ثبت‌نام
 @app.post("/api/register")
 def register(req: RegisterRequest):
-    # اینجا میشه دیتابیس واقعی زد، الان فقط تستیه
+    print("📥 Register request:", req.dict())
     return {"status": "ok", "player_id": req.username}
 
-# ---------------------------
-# 📌 API حرکت (مثال بازی)
-# ---------------------------
+# 🟢 حرکت بازیکن
 @app.post("/api/move")
 def move(req: MoveRequest):
-    # حرکت رو برمی‌گردونیم (برای تست)
+    print("📥 Move request:", req.dict())
     return {"status": "ok", "move": req.move}
 
-# ---------------------------
-# 📌 API بازی با AI
-# ---------------------------
+# 🟢 بازی با AI
 @app.post("/api/ai")
 def ai_play(req: AIState):
-    # یه پاسخ خیلی ساده از AI
+    print("📥 AI request:", req.dict())
+    # AI خیلی ساده – همیشه attack_base می‌کنه
     return {"status": "ok", "ai_move": "attack_base"}
 
-# ---------------------------
-# 📌 اجرای لوکال
-# ---------------------------
 if __name__ == "__main__":
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
